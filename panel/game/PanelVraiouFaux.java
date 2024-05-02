@@ -30,10 +30,6 @@ public class PanelVraiouFaux {
     long endTime;
     private static String username;
 
-    private static final String URL = "jdbc:mysql://127.0.0.1:3306/minigames";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "root";
-
     public static void play(String usernamed) {
         username = usernamed;
         PanelVraiouFaux interfaceInstance = new PanelVraiouFaux();
@@ -94,7 +90,7 @@ public class PanelVraiouFaux {
 
     private void loadQuestions() {
         remainingQuestions = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        try (Connection connection = DriverManager.getConnection(Database.getURL(), Database.getUser(), Database.getPassword());
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT id, reponse, question FROM vraioufauxquestion")) {
             while (resultSet.next()) {

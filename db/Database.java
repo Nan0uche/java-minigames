@@ -5,11 +5,13 @@ import list.trueorfalse.TrueFalseGameLogic;
 import java.sql.*;
 
 public class Database {
+
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/minigames";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "root";
     public static void connectToDB() {
         try {
-            Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://127.0.0.1:3306/minigames", "root", "root"
-            );
+            Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
             Statement statement = connection.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255))");
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS plusoumoins (username VARCHAR(255) PRIMARY KEY, score JSON, timeplayed int)");
@@ -151,6 +153,16 @@ public class Database {
             e.printStackTrace();
         }
         return isEmpty;
+    }
+
+    public static String getURL(){
+        return URL;
+    }
+    public static String getUser(){
+        return USERNAME;
+    }
+    public static String getPassword(){
+        return PASSWORD;
     }
 
 }

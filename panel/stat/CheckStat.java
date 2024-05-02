@@ -1,15 +1,13 @@
 package panel.stat;
 
+import db.Database;
+
 import java.sql.*;
 
 public class CheckStat {
-    private static final String URL = "jdbc:mysql://127.0.0.1:3306/minigames";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "root";
-
     public static boolean hasPlay(String username, String table) {
         int totalPlayTimeSeconds = 0;
-        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        try (Connection connection = DriverManager.getConnection(Database.getURL(), Database.getUser(), Database.getPassword());
              PreparedStatement statement = connection.prepareStatement("SELECT SUM(timeplayed) AS total_play_time FROM " + table + " WHERE username = ?")) {
 
             statement.setString(1, username);
@@ -27,7 +25,7 @@ public class CheckStat {
 
     public static String getTotalPlayTime(String username, String table) {
         int totalPlayTimeSeconds = 0;
-        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        try (Connection connection = DriverManager.getConnection(Database.getURL(), Database.getUser(), Database.getPassword());
              PreparedStatement statement = connection.prepareStatement("SELECT SUM(timeplayed) AS total_play_time FROM " + table + " WHERE username = ?")) {
 
             statement.setString(1, username);
@@ -53,7 +51,7 @@ public class CheckStat {
 
     public static int getGamesPlayed(String username, String table) {
         int gamesPlayed = 0;
-        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        try (Connection connection = DriverManager.getConnection(Database.getURL(), Database.getUser(), Database.getPassword());
              PreparedStatement statement = connection.prepareStatement("SELECT score FROM " + table + " WHERE username = ?")) {
 
             statement.setString(1, username);
@@ -78,7 +76,7 @@ public class CheckStat {
 
     public static int getBestScore(String username, String table) {
         int bestScore = 0;
-        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        try (Connection connection = DriverManager.getConnection(Database.getURL(), Database.getUser(), Database.getPassword());
              PreparedStatement statement = connection.prepareStatement("SELECT score FROM " + table + " WHERE username = ?")) {
 
             statement.setString(1, username);
@@ -110,7 +108,7 @@ public class CheckStat {
     public static int getWorstScore(String username, String table) {
         int worstScore = Integer.MAX_VALUE; // Initialiser avec une valeur maximale pour trouver le minimum
 
-        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        try (Connection connection = DriverManager.getConnection(Database.getURL(), Database.getUser(), Database.getPassword());
              PreparedStatement statement = connection.prepareStatement("SELECT score FROM " + table + " WHERE username = ?")) {
 
             statement.setString(1, username);
@@ -143,7 +141,7 @@ public class CheckStat {
         int totalScore = 0;
         int count = 0;
 
-        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        try (Connection connection = DriverManager.getConnection(Database.getURL(), Database.getUser(), Database.getPassword());
              PreparedStatement statement = connection.prepareStatement("SELECT score FROM " + table + " WHERE username = ?")) {
 
             statement.setString(1, username);
