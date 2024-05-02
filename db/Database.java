@@ -1,6 +1,7 @@
 package db;
 
 import list.trueorfalse.TrueFalseGameLogic;
+import panel.game.PanelHangman;
 
 import java.sql.*;
 
@@ -36,6 +37,39 @@ public class Database {
                 TrueFalseGameLogic.createQuestion("Votre nez produit près d'un litre de mucus par jour.", true);
                 TrueFalseGameLogic.createQuestion("Une noix de coco est une noix.", false);
                 TrueFalseGameLogic.createQuestion("Dans l'Ohio, aux États-Unis, il est illégal de saouler un poisson.", false);
+            }
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS hangmanword (id INT AUTO_INCREMENT PRIMARY KEY,word VARCHAR(255))");
+            if(isTableEmpty("hangmanword")){
+                PanelHangman.addWord("Maison");
+                PanelHangman.addWord("Arbre");
+                PanelHangman.addWord("Chien");
+                PanelHangman.addWord("Chat");
+                PanelHangman.addWord("Voiture");
+                PanelHangman.addWord("École");
+                PanelHangman.addWord("Livre");
+                PanelHangman.addWord("Ordinateur");
+                PanelHangman.addWord("Montagne");
+                PanelHangman.addWord("Soleil");
+                PanelHangman.addWord("Bonheur");
+                PanelHangman.addWord("Amour");
+                PanelHangman.addWord("Jardin");
+                PanelHangman.addWord("Musique");
+                PanelHangman.addWord("Voyage");
+                PanelHangman.addWord("Téléphone");
+                PanelHangman.addWord("Plage");
+                PanelHangman.addWord("Café");
+                PanelHangman.addWord("Gâteau");
+                PanelHangman.addWord("Cuisine");
+                PanelHangman.addWord("Télévision");
+                PanelHangman.addWord("Football");
+                PanelHangman.addWord("Basket-ball");
+                PanelHangman.addWord("Tennis");
+                PanelHangman.addWord("Dessin");
+                PanelHangman.addWord("Hiver");
+                PanelHangman.addWord("Été");
+                PanelHangman.addWord("Printemps");
+                PanelHangman.addWord("Automne");
+                PanelHangman.addWord("Table");
             }
 
             connection.close();

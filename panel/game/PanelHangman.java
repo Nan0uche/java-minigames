@@ -10,12 +10,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.*;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class PanelHangman extends JFrame {
-    private List<String> mots = new ArrayList<>();
+    private String mots;
     private String motADeviner;
     private String motEnCours;
     private JLabel motLabel;
@@ -86,9 +87,7 @@ public class PanelHangman extends JFrame {
 
         add(bottomPanel, BorderLayout.SOUTH);
 
-        lireMotsDepuisFichier();
-        choisirMotAleatoire();
-
+        lireMotsDepuisBaseDeDonnees();
         guessButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -112,38 +111,31 @@ public class PanelHangman extends JFrame {
 
 
 
-    private void lireMotsDepuisFichier() {
-        try (BufferedReader br = new BufferedReader(new FileReader("list/hangman/words.txt"))) {
-            String ligne;
-            while ((ligne = br.readLine()) != null) {
-                mots.add(ligne);
+    private void lireMotsDepuisBaseDeDonnees() {
+        try (Connection connection = DriverManager.getConnection(Database.getURL(), Database.getUser(), Database.getPassword());
+             PreparedStatement statement = connection.prepareStatement("SELECT word FROM hangmanword ORDER BY RAND() LIMIT 1");
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                motADeviner = resultSet.getString("word");
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < motADeviner.length(); i++) {
+                    char c = motADeviner.charAt(i);
+                    if (Character.isWhitespace(c)) {
+                        sb.append(' ');
+                    } else {
+                        sb.append('_');
+                    }
+                }
+                motEnCours = sb.toString();
+
+                motLabel.setText(motEnCours);
             }
-        } catch (IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Erreur lors de la lecture du fichier de mots.");
+            JOptionPane.showMessageDialog(null, "Erreur lors de la lecture des mots depuis la base de données.");
             System.exit(1);
         }
     }
-
-    private void choisirMotAleatoire() {
-        Random random = new Random();
-        int indexMot = random.nextInt(mots.size());
-        motADeviner = mots.get(indexMot);
-
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < motADeviner.length(); i++) {
-            char c = motADeviner.charAt(i);
-            if (Character.isWhitespace(c)) {
-                sb.append(' ');
-            } else {
-                sb.append('_');
-            }
-        }
-        motEnCours = sb.toString();
-
-        motLabel.setText(motEnCours);
-    }
-
     private String supprimerAccents(String texte) {
         return java.text.Normalizer.normalize(texte, java.text.Normalizer.Form.NFD)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
@@ -251,12 +243,12 @@ public class PanelHangman extends JFrame {
     }
 
     public static void addWord(String mot) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("list/hangman/words.txt", true))) {
-            writer.write(mot);
-            writer.newLine();
-        } catch (IOException e) {
+        try (Connection connection = DriverManager.getConnection(Database.getURL(), Database.getUser(), Database.getPassword());
+             PreparedStatement statement = connection.prepareStatement("INSERT INTO hangmanword (word) VALUES (?)")) {
+            statement.setString(1, mot);
+            statement.executeUpdate();
+        } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Erreur lors de l'ajout du mot au fichier.");
         }
     }
 

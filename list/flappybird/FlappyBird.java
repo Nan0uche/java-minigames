@@ -194,8 +194,8 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener {
             gameLoop.stop();
             endTime = System.currentTimeMillis();
             int totalTimeInMillis = (int) (endTime - startTime);
-            totalTimeInMillis = totalTimeInMillis / 1000;
-            Database.addScore(username, (int) score, totalTimeInMillis, "flappybird");
+            int totalTimeInSeconds = totalTimeInMillis / 1000;
+            Database.addScore(username, (int) score, totalTimeInSeconds, "flappybird");
         }
     }  
 

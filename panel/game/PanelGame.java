@@ -60,7 +60,7 @@ public class PanelGame {
         addButton(panel, "Snake", null, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PanelSnake.play(username);
+                //PanelSnake.play(username);
             }
         });
         addButton(panel, "Flappy Bird", "list/flappybird/flappybird.png", new ActionListener() {
