@@ -9,8 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PanelStat {
+    private static JFrame f; // Déclaration de la variable f en tant que variable de classe
+
     public static void statGame(String username) {
-        JFrame f = new JFrame("Voir les statistiques");
+        f = new JFrame("Voir les statistiques"); // Initialisation de f
         f.setExtendedState(JFrame.MAXIMIZED_BOTH);
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 3, 10, 10));
@@ -37,7 +39,8 @@ public class PanelStat {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(text == "Retour") {
+                if (text.equals("Retour")) {
+                    f.dispose(); // Dispose la fenêtre avant de retourner au panneau de sélection de jeu
                     PanelGame.chooseGame(username);
                     return;
                 }
