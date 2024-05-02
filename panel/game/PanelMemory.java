@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -25,21 +24,26 @@ class PanelMemory extends JPanel {
     private int pairsFound = 0;
     private int secondsElapsed = 0;
     private JLabel timerLabel;
-    private JLabel attemptsLabel; // Label pour afficher le nombre de tentatives
+    private JLabel attemptsLabel;
     private Timer timer;
     private boolean isPair = true;
     private int tentative = 0;
 
     public PanelMemory(String username) {
         this.setLayout(new BorderLayout());
+        JPanel infoPanel = new JPanel(new BorderLayout());
 
-        // Créer un label pour afficher le temps écoulé
+        attemptsLabel = new JLabel("Tentatives : 0");
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        leftPanel.add(attemptsLabel);
+        infoPanel.add(leftPanel, BorderLayout.WEST);
+
         timerLabel = new JLabel("Temps écoulé : 0 seconde");
-        this.add(timerLabel, BorderLayout.WEST);
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        rightPanel.add(timerLabel);
+        infoPanel.add(rightPanel, BorderLayout.EAST);
 
-        // Créer un label pour afficher le nombre de tentatives
-        attemptsLabel = new JLabel("Tentatives : 0", SwingConstants.RIGHT);
-        this.add(attemptsLabel, BorderLayout.EAST);
+        this.add(infoPanel, BorderLayout.NORTH);
 
         memory = new Memory();
         cards = memory.getCards();
@@ -51,7 +55,7 @@ class PanelMemory extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 secondsElapsed++;
-                timerLabel.setText("Temps écoulé : " + secondsElapsed + " secondes");
+                timerLabel.setText("Temps écoulé : " + secondsElapsed + " seconde(s)");
             }
         });
         timer.start();
@@ -104,7 +108,7 @@ class PanelMemory extends JPanel {
                             if (pairsFound == cards.size() / 2) {
                                 timer.stop(); // Arrêter le timer lorsque toutes les paires sont trouvées
                                 Database.addScore(username,1000 - (tentative * 50), secondsElapsed, "memory");
-                                JOptionPane.showMessageDialog(null, "Bravo ! Vous avez trouvé les pairs en " + secondsElapsed + " secondes !", "Fin de partie", JOptionPane.INFORMATION_MESSAGE);
+                                JOptionPane.showMessageDialog(null, "Bravo ! Vous avez trouvé les paires en " + secondsElapsed + " seconde(s)!", "Fin de partie", JOptionPane.INFORMATION_MESSAGE);
                             }
                             // Réinitialiser les boutons uniquement si une paire a été trouvée
                             firstButton = null; // Réinitialiser firstButton
@@ -125,6 +129,7 @@ class PanelMemory extends JPanel {
 
     public static void play(String username) {
         JFrame frame = new JFrame("Jeu du Memory");
+        frame.setLocationRelativeTo(null);
         PanelMemory panelMemory = new PanelMemory(username);
         frame.getContentPane().add(panelMemory);
         frame.pack();
