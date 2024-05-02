@@ -1,5 +1,7 @@
 package db;
 
+import list.trueorfalse.TrueFalseGameLogic;
+
 import java.sql.*;
 
 public class Database {
@@ -13,9 +15,27 @@ public class Database {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS plusoumoins (username VARCHAR(255) PRIMARY KEY, score JSON, timeplayed int)");
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS flappybird (username VARCHAR(255) PRIMARY KEY, score JSON, timeplayed int)");
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS vraioufaux (username VARCHAR(255) PRIMARY KEY, score JSON, timeplayed int)");
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS vraioufauxquestion (id INT AUTO_INCREMENT PRIMARY KEY,reponse BOOLEAN, question VARCHAR(255))");
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS hangman (username VARCHAR(255) PRIMARY KEY, score JSON, timeplayed int)");
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS sudoku (username VARCHAR(255) PRIMARY KEY, score JSON, timeplayed int)");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS memory (username VARCHAR(255) PRIMARY KEY, score JSON, timeplayed int)");
+
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS vraioufauxquestion (id INT AUTO_INCREMENT PRIMARY KEY,reponse BOOLEAN, question VARCHAR(255))");
+
+            if(isTableEmpty("vraioufauxquestion")){
+                TrueFalseGameLogic.createQuestion("La Cité du Vatican est un pays.", true);
+                TrueFalseGameLogic.createQuestion("Melbourne est la capitale de l'Australie.", false);
+                TrueFalseGameLogic.createQuestion("Le mont Fuji est la plus haute montagne du Japon.", true);
+                TrueFalseGameLogic.createQuestion("Le crâne est l'os le plus solide du corps humain.", false);
+                TrueFalseGameLogic.createQuestion("Les ampoules électriques ont été inventées par Thomas Edison.", false);
+                TrueFalseGameLogic.createQuestion("Google s'appelait initialement BackRub.", true);
+                TrueFalseGameLogic.createQuestion("La boîte noire dans un avion est noire..", false);
+                TrueFalseGameLogic.createQuestion("Cléopâtre était d'origine égyptienne..", false);
+                TrueFalseGameLogic.createQuestion("Les bananes sont des baies.", true);
+                TrueFalseGameLogic.createQuestion("Votre nez produit près d'un litre de mucus par jour.", true);
+                TrueFalseGameLogic.createQuestion("Une noix de coco est une noix.", false);
+                TrueFalseGameLogic.createQuestion("Dans l'Ohio, aux États-Unis, il est illégal de saouler un poisson.", false);
+            }
+
             connection.close();
         } catch (SQLException e) {
             // Handle SQL exceptions
@@ -71,6 +91,12 @@ public class Database {
                 insertSudokuStatement.setString(2, "[]");
                 insertSudokuStatement.setString(3, "0");
                 insertSudokuStatement.executeUpdate();
+
+                PreparedStatement insertMemoryStatement = connection.prepareStatement("INSERT INTO memory (username, score, timeplayed) VALUES (?,?, ?)");
+                insertMemoryStatement.setString(1, username);
+                insertMemoryStatement.setString(2, "[]");
+                insertMemoryStatement.setString(3, "0");
+                insertMemoryStatement.executeUpdate();
             }
 
             connection.close();
@@ -110,5 +136,21 @@ public class Database {
         }
     }
 
+    public static boolean isTableEmpty(String tableName) {
+        boolean isEmpty = true;
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/minigames", "root", "root")) {
+            String query = "SELECT COUNT(*) AS count FROM " + tableName;
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery(query)) {
+                if (resultSet.next()) {
+                    int rowCount = resultSet.getInt("count");
+                    isEmpty = (rowCount == 0);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return isEmpty;
+    }
 
 }

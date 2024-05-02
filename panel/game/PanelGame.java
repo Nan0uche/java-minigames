@@ -33,10 +33,10 @@ public class PanelGame {
                 PanelHangman.play(username);
             }
         });
-        addButton(panel, "Memory", null, new ActionListener() {
+        addButton(panel, "Memory", "img/memory.png", new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Action à exécuter lorsque le bouton est cliqué
+                PanelMemory.play(username);
             }
         });
         addButton(panel, "BlackJack", null, new ActionListener() {
