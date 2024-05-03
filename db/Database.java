@@ -21,6 +21,7 @@ public class Database {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS hangman (username VARCHAR(255) PRIMARY KEY, score JSON, timeplayed int)");
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS sudoku (username VARCHAR(255) PRIMARY KEY, score JSON, timeplayed int)");
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS memory (username VARCHAR(255) PRIMARY KEY, score JSON, timeplayed int)");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS blackjack (username VARCHAR(255) PRIMARY KEY, score JSON, timeplayed int)");
 
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS vraioufauxquestion (id INT AUTO_INCREMENT PRIMARY KEY,reponse BOOLEAN, question VARCHAR(255))");
 
@@ -133,6 +134,12 @@ public class Database {
                 insertMemoryStatement.setString(2, "[]");
                 insertMemoryStatement.setString(3, "0");
                 insertMemoryStatement.executeUpdate();
+
+                PreparedStatement insertBlackJackStatement = connection.prepareStatement("INSERT INTO blackjack (username, score, timeplayed) VALUES (?,?, ?)");
+                insertBlackJackStatement.setString(1, username);
+                insertBlackJackStatement.setString(2, "[]");
+                insertBlackJackStatement.setString(3, "0");
+                insertBlackJackStatement.executeUpdate();
             }
 
             connection.close();

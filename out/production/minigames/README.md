@@ -1,2 +1,0 @@
-# java-minigames
-java-minigames

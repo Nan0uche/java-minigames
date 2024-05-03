@@ -21,7 +21,7 @@ public class PanelStat {
         addButton(panel, "True Or False", "img/vraioufaux.png", "vraioufaux", username);
         addButton(panel, "Jeu du Pendu", "img/hangman.png", "hangman", username);
         addButton(panel, "Memory", "img/memory.png", "memory", username);
-        addButton(panel, "BlackJack", null, "blackjack", username);
+        addButton(panel, "BlackJack", "img/Cards/BACK.png", "blackjack", username);
         addButton(panel, "Sudoku", "img/sudoku.png", "sudoku", username);
         addButton(panel, "2048", null, "2048", username);
         addButton(panel, "Snake", null, "snake", username);
