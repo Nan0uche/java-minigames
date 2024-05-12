@@ -12,12 +12,13 @@ Ce README vous guide à travers notre projet Java, qui comprend plusieurs mini-j
 ### NOS JEUX
 
 - BlackJack
-- Démineur
+- Démineur (encore en dev)
 - FlappyBird
 - Memory
 - Snake
 - Sudoku
 - VraiOuFaux
+- Pendu
 
 ### LES REGLES
 
@@ -42,7 +43,7 @@ Ce README vous guide à travers notre projet Java, qui comprend plusieurs mini-j
 ### 7. Vrai ou Faux
    Dans Vrai ou Faux, le joueur est confronté à une série d'affirmations et doit déterminer si elles sont vraies ou fausses. Le joueur sélectionne sa réponse et reçoit un retour immédiat sur sa véracité.
 
-### 7. Pendu
+### 8. Pendu
    Le Pendu est un jeu de devinette où le joueur doit deviner un mot en proposant des lettres une à une. Le jeu commence avec un certain nombre de tirets représentant les lettres du mot à deviner. À chaque fois que le joueur propose une lettre, si elle est présente dans le mot, elle est révélée à toutes les positions correspondantes. Si la lettre n'est pas dans le mot, une partie du pendu est dessinée. Le joueur gagne s'il devine le mot avant que le dessin du pendu ne soit complet, sinon il perd.
 
 ### NOS AJOUTS
@@ -50,11 +51,34 @@ Ce README vous guide à travers notre projet Java, qui comprend plusieurs mini-j
 - statistiques des parties (via le menu stats)
 - possibilité de configurer certains jeux ou d'ajouter ses propres mots pour le pendu ou des questions pour le VraiOuFaux
 
+### LA BASE DE DONEES
+Étape 1: Configuration de la base de données avec WampServer
+Installation de WampServer:
+
+Téléchargez et installez WampServer à partir du site officiel.
+Lancement de WampServer:
+Installation de MySQL: Si vous n'avez pas encore MySQL installé sur votre machine, vous pouvez le télécharger et l'installer à partir du site officiel MySQL
+
+Après l'installation, lancez WampServer. Assurez-vous que les services Apache et MySQL sont démarrés.
+Accès à phpMyAdmin:
+
+Ouvrez un navigateur Web et accédez à phpMyAdmin en saisissant l'URL http://localhost/phpmyadmin.
+Création de la base de données et des tables:
+
+Connectez-vous à phpMyAdmin en utilisant le nom d'utilisateur et le mot de passe par défaut (généralement root et une chaîne vide pour le mot de passe).
+Créez une nouvelle base de données nommée minigames.
+
+Étape 2: Ajout de la librairie
+Ajouter le .jar dans le dossier lib et le mettre dans la librairie du projet
+
+Étape 3: Configuration du projet
+Modifiez les constantes URL, USERNAME, et PASSWORD avec les détails de connexion à votre base de données MySQL (généralement jdbc:mysql://localhost:3306/minigames, root pour l'utilisateur, et une chaîne vide pour le mot de passe) dans les classes nécéssitant des appels à la base de donnée.
+
 ### Remerciements
 Ce projet a été créé en collaboration par trois étudiants dans le but de rendre un devoir pour leurs curus à Bordeaux Ynov Campus.
 
-ROUSSEL Mathéo
-DERC Nathan
-CHIPPEY Theo
+- ROUSSEL Mathéo
+- DERC Nathan
+- CHIPPEY Theo
 
 
