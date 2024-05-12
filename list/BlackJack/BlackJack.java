@@ -1,5 +1,7 @@
 package list.BlackJack;
 
+import db.Database;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -7,6 +9,11 @@ import java.util.Random;
 import javax.swing.*;
 
 public class BlackJack {
+
+    long startTime;
+    long endTime;
+
+    private String username;
     private class Card {
         String value;
         String type;
@@ -35,7 +42,7 @@ public class BlackJack {
         }
 
         public String getImagePath() {
-            return "./cards/" + toString() + ".png";
+            return "img/Cards/" + toString() + ".png";
         }
     }
 
@@ -68,49 +75,76 @@ public class BlackJack {
 
             try {
                 //draw hidden card
-                Image hiddenCardImg = new ImageIcon(getClass().getResource("./cards/BACK.png")).getImage();
+                ClassLoader classLoader = getClass().getClassLoader();
+                Image hiddenCardImg = new ImageIcon(classLoader.getResource("img/Cards/BACK.png")).getImage();
                 if (!stayButton.isEnabled()) {
-                    hiddenCardImg = new ImageIcon(getClass().getResource(hiddenCard.getImagePath())).getImage();
+                    hiddenCardImg = new ImageIcon(classLoader.getResource("img/Cards/BACK.png")).getImage();
                 }
                 g.drawImage(hiddenCardImg, 20, 20, cardWidth, cardHeight, null);
 
                 //draw dealer's hand
-                for (int i = 0; i < dealerHand.size(); i++) {
-                    Card card = dealerHand.get(i);
-                    Image cardImg = new ImageIcon(getClass().getResource(card.getImagePath())).getImage();
-                    g.drawImage(cardImg, cardWidth + 25 + (cardWidth + 5)*i, 20, cardWidth, cardHeight, null);
+                if(dealerHand != null){
+                    for (int i = 0; i < dealerHand.size(); i++) {
+                        Card card = dealerHand.get(i);
+                        Image cardImg = new ImageIcon(classLoader.getResource(card.getImagePath())).getImage();
+                        g.drawImage(cardImg, cardWidth + 25 + (cardWidth + 5)*i, 20, cardWidth, cardHeight, null);
+                    }
                 }
 
                 //draw player's hand
-                for (int i = 0; i < playerHand.size(); i++) {
-                    Card card = playerHand.get(i);
-                    Image cardImg = new ImageIcon(getClass().getResource(card.getImagePath())).getImage();
-                    g.drawImage(cardImg, 20 + (cardWidth + 5)*i, 320, cardWidth, cardHeight, null);
+                if(playerHand != null){
+                    for (int i = 0; i < playerHand.size(); i++) {
+                        Card card = playerHand.get(i);
+                        Image cardImg = new ImageIcon(classLoader.getResource(card.getImagePath())).getImage();
+                        g.drawImage(cardImg, 20 + (cardWidth + 5)*i, 320, cardWidth, cardHeight, null);
+                    }
                 }
 
                 if (!stayButton.isEnabled()) {
                     dealerSum = reduceDealerAce();
                     playerSum = reducePlayerAce();
-                    System.out.println("STAY: ");
-                    System.out.println(dealerSum);
-                    System.out.println(playerSum);
 
                     String message = "";
                     if (playerSum > 21) {
                         message = "You Lose!";
+                        endTime = System.currentTimeMillis();
+                        int totalTimeInMillis = (int) (endTime - startTime);
+                        int totalTimeInSeconds = totalTimeInMillis / 1000;
+                        playerBalance -= betAmount;
+                        Database.addScore(username, playerBalance, totalTimeInSeconds, "blackjack");
                     }
                     else if (dealerSum > 21) {
                         message = "You Win!";
+                        endTime = System.currentTimeMillis();
+                        int totalTimeInMillis = (int) (endTime - startTime);
+                        int totalTimeInSeconds = totalTimeInMillis / 1000;
+                        playerBalance += 2 * betAmount;
+                        Database.addScore(username, playerBalance, totalTimeInSeconds, "blackjack");
                     }
                     //both you and dealer <= 21
-                    else if (playerSum == dealerSum) {
+                    else if (playerSum == dealerSum && playerHand != null) {
                         message = "Tie!";
+                        endTime = System.currentTimeMillis();
+                        int totalTimeInMillis = (int) (endTime - startTime);
+                        int totalTimeInSeconds = totalTimeInMillis / 1000;
+                        playerBalance -= betAmount;
+                        Database.addScore(username, playerBalance, totalTimeInSeconds, "blackjack");
                     }
                     else if (playerSum > dealerSum) {
                         message = "You Win!";
+                        endTime = System.currentTimeMillis();
+                        int totalTimeInMillis = (int) (endTime - startTime);
+                        int totalTimeInSeconds = totalTimeInMillis / 1000;
+                        playerBalance += 2 * betAmount;
+                        Database.addScore(username, playerBalance, totalTimeInSeconds, "blackjack");
                     }
                     else if (playerSum < dealerSum) {
                         message = "You Lose!";
+                        endTime = System.currentTimeMillis();
+                        int totalTimeInMillis = (int) (endTime - startTime);
+                        int totalTimeInSeconds = totalTimeInMillis / 1000;
+                        playerBalance -= betAmount;
+                        Database.addScore(username, playerBalance, totalTimeInSeconds, "blackjack");
                     }
 
                     g.setFont(new Font("Arial", Font.PLAIN, 30));
@@ -135,12 +169,13 @@ public class BlackJack {
     int betAmount = 0;
     boolean betPlaced = false;
 
-    BlackJack() {
+    public BlackJack(String usernamed) {
+        startTime = System.currentTimeMillis();
+        username = usernamed;
         frame.setVisible(true);
         frame.setSize(boardWidth, boardHeight);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         gamePanel.setLayout(new BorderLayout());
         gamePanel.setBackground(new Color(53, 101, 77));
@@ -219,15 +254,13 @@ public class BlackJack {
 
         replayButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (playerSum > dealerSum && playerSum <= 21 || dealerSum > 21) {
-                    playerBalance += 2 * betAmount;
-                }
                 betPlaced = false;
                 betAmount = 0;
                 betLabel.setText("Bet: $" + betAmount);
                 balanceLabel.setText("Balance: $" + playerBalance);
                 hitButton.setEnabled(false);
                 stayButton.setEnabled(false);
+                startTime = System.currentTimeMillis();
                 startGame();
                 gamePanel.repaint();
             }
@@ -311,9 +344,5 @@ public class BlackJack {
     }
 
     public void endGame() {
-    }
-
-    public static void main(String[] args) {
-        new BlackJack();
     }
 }
